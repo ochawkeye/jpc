@@ -293,20 +293,20 @@ def find_stage_names(site):
     contents = open_file_return_contents(path_name, 'REY.config')
     if contents.count('<StageStatus'):
         return {config_file_variables['<WorkCenter>']: between_the_tags(contents, 'StageStatus')}
-    if site == 'JGS MEMPHIS':
+    if site == 'SITE A':
         return {
-            'WUR_REPAIR': 'TO_FI',
-            'WUR_FI': 'TO_QA',
-            'WUR_QA': None, }
-    elif site == 'BYDGOSZCZ':
+            'WC_1': 'TO_WC2',
+            'WC_2': 'TO_WC3',
+            'WC_3': None, }
+    elif site == 'SITE B':
         return {
-            'REF_BURN_IN': 'PASS',
-            'REF_DEBUG': None, }
-    elif site == 'REYNOSA':
+            'WC_1': 'TO_WC2',
+            'WC_2': None, }
+    elif site == 'SITE C':
         return {
-            'RF-TEST-BET': 'PASS',
-            'FAKE_WORK_CENTER': 'TO_NEXT_FAKE',
-            'FAKE_WORK_CENTER2': None, }
+            'WC_1': 'TO_WC2',
+            'WC_2': 'TO_WC3',
+            'WC_3': None, }
     else:
         print 'Process Control Engine has not been setup for this location yet'
         return {}
@@ -349,7 +349,7 @@ def interpret_response(file_name, response_type, type):
                 file_name, response_type, '<ResultMessage>')
             if IT_result == 'SUCCESS':
                 print 'F1C has validated that unit is in correct work center.'
-                if site == 'REYNOSA':
+                if site == 'SITE C':
                     return 'LaunchRF'
                 else:
                     return 'LaunchDSN'
@@ -412,7 +412,7 @@ def interpret_response(file_name, response_type, type):
         DSN_script_name = parse_response_file(
             file_name, response_type, '<ScriptName>')
         print 'DSN has', DSN_result, 'the script named', DSN_script_name
-        if site == 'JGS MEMPHIS':
+        if site == 'SITE A':
             timeout_candidate = False
             timeout_scripts = config_file_variables['<TimeoutScriptsAllowed>']
             for each in timeout_scripts:
@@ -432,7 +432,7 @@ def interpret_response(file_name, response_type, type):
             else:
                 print 'Unknown Process Type'
                 return 'ERROR'
-        elif site == 'BYDGOSZCZ':
+        elif site == 'SITE B':
             timeout_candidate = False
             #copy from local dsn location to remote dsn location
             shutil.copy(
@@ -464,13 +464,13 @@ def interpret_response(file_name, response_type, type):
         else:
             test_status = 'FAILED'
         print 'RF test has %s testing' % test_status
-        if site == 'REYNOSA':
+        if site == 'SITE C':
             timeout_candidate = False
             # copy from local log location to remote log location
             shutil.copy(
                 os.path.join(local_dsn_xml_path_name, file_name),
                 os.path.join(remote_dsn_xml_path_name, file_name))
-            # LOGIC FOR REYNOSA RF TEST AUTO-TIMEOUT
+            # LOGIC FOR SITE C TEST AUTO-TIMEOUT
             if test_status == 'PASSED':
                 update_configuration_file()
                 lazy_update(test_status)
@@ -572,40 +572,40 @@ def find_rf_failures(entire_contents):
 
 def failcode_lookup(list_of_tests):
     unit_fc = []
-    failcodes = {'Phase Error': 33.2,
-                 'Frequency Error': 33.2,
-                 'EVM': 33.2,
-                 'Magnitude Error': 33.2,
-                 'Peak Code Domain Error': 33.2,
-                 'Sensitivity FER @-104dBm': 33.2,
-                 'Rho': 33.2,
-                 'CDMA Voice Quality': 37.2,
-                 'WCDMA Change Channel': 33.2,
-                 'BER Ratio': 33.2,
-                 'CDMA Origination': 33.2,
-                 'Carrier Feedthrough': 33.2,
-                 'RX Level': 33.2,
-                 'Frequency Error in Hz': 33.2,
-                 'Time Error': 33.2,
-                 'Frequency Error in ppm': 33.2,
-                 'Origin Offset': 33.2,
-                 'GSM Base Station Initiated Call Successful': 33.2,
-                 'Peak Phase Error': 33.2,
-                 'GSM Handover Successful': 33.2,
-                 'Ref Sensitivity BER @-104 dBm': 33.2,
-                 'GSM Voice Quality': 37.2,
-                 'RMS Phase Error': 33.2,
-                 'Handoff': 33.2,
-                 'RX Quality': 33.2,
-                 'Instrument IDN': 33.2,
-                 'Static Timing Offset': 33.2,
-                 'WCDMA Page': 33.2,
-                 'TX Power': 33.2,
-                 'BER': 33.2,
-                 'CDMA Registration': 33.2,
-                 'Maximum RF Output Power': 33.2,
-                 'Maximum Output Power': 33.2,
-                 'No Log Created': 32.2, }
+    failcodes = {'a': 33.2,
+                 'b': 33.2,
+                 'c': 33.2,
+                 'd': 33.2,
+                 'e': 33.2,
+                 'f': 33.2,
+                 'g': 33.2,
+                 'h': 37.2,
+                 'i': 33.2,
+                 'j': 33.2,
+                 'k': 33.2,
+                 'l': 33.2,
+                 'm': 33.2,
+                 'n': 33.2,
+                 'o': 33.2,
+                 'p': 33.2,
+                 'q': 33.2,
+                 'r': 33.2,
+                 's': 33.2,
+                 't': 33.2,
+                 'u': 33.2,
+                 'v': 37.2,
+                 'w': 33.2,
+                 'x': 33.2,
+                 'y': 33.2,
+                 'z': 33.2,
+                 'aa': 33.2,
+                 'ab': 33.2,
+                 'ac': 33.2,
+                 'ad': 33.2,
+                 'ad': 33.2,
+                 'ae': 33.2,
+                 'af': 33.2,
+                 'ag': 32.2, }
     for failure in list_of_tests:
         if failure in failcodes:
             if failcodes[failure] not in unit_fc:
@@ -650,7 +650,7 @@ def usage():
         Configuaration file variables (REY.config)
         must reside in same directory as script
 
-        XML template (F1Click_template.xml)
+        XML template (xxx_template.xml)
         must reside in same directory as script
         '''
 
